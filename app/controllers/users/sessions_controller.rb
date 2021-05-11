@@ -1,7 +1,21 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
+  before_action :reject_inactive_user, only: [:create]
   # before_action :configure_sign_in_params, only: [:create]
+  
+  def reject_inactive_user
+    @user = User.find_by(name: params[:user][:name])
+    if @user
+      if @user.valid_password?(params[:user][:password]) && !@user.is_valid
+        redirect_to new_user_session_path
+      end
+    end
+  end
+  
+  def after_sign_in_path_for(resource)
+    mypage_path(@user)
+  end
 
   # GET /resource/sign_in
   # def new

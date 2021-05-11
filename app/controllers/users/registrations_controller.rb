@@ -14,6 +14,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
      super
      WelcomeMailer.send_when_signup(params[:user][:email],params[:user][:name]).deliver
    end
+   
+   def after_sign_up_path_for(resource)
+     mypage_path(@user)
+   end
 
   # GET /resource/edit
   # def edit
